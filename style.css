@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+strong {
+    font-weight: 700;
+}
+
+body {
+    background-color: #F3F3F3;
+    font-family: 'Roboto', sans-serif;
+}
+
+.topo {
+    height: 80px;
+    width: 100%;
+    background-color: #FFFFFF;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.topo img {
+    width: 75px;
+    height: 53px;
+    margin-left: 22px;
+}
+
+.topo ion-icon {
+    font-size: 50px;
+    margin-right: 22px;
+}
+
+.container {
+    margin-top: 106px;
+}
+
+.mensagem {
+    margin-bottom: 5px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.mensagem p{
+    font-size: 14px;
+    margin-left: 10px;
+    line-height: 1.4;
+}
+
+.mensagem span {
+    color: #AAAAAA;
+}
+
+.mensagemStatus {
+    background-color: #DCDCDC;
+}
+
+.mensagemNormal {
+    background-color: #FFFFFF;
+}
+
+.mensagemReservadas {
+    background-color: #FFDEDE;
+}
+
+.bottom {
+    height: 80px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background-color: #FFFFFF;
+    box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.bottom input {
+    height: 50px;
+    width: 100%;
+    border: 0px;
+    font-size: 16px;
+    font-weight: 400;
+    font-style: italic;
+    padding-left: 20px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.escreverMensagem {
+    width: 85%;
+}
+
+.bottom ion-icon {
+    font-size: 26px;
+    margin-right: 8px;
+}
+
+

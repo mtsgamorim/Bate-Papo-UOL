@@ -1,18 +1,12 @@
 let usuario
 let requisicaoEntrar;
 let ficarOnline;
-let statusCode;
 let promise;
 let mensagem = document.querySelector(".container");
 let input = document.querySelector("input");
 let texto;
-
 let mensagemEnviar = {}
-
 let requisicaoEnviar;
-
-
-
 let mensagens = [];
 
 function conectar() {
@@ -30,6 +24,7 @@ function ficarNaSala(response) {
     setInterval(ManterConexao, 5000);
     // AQUI VAI GERAR AS MENSAGENS E OS ENVIOS
     setInterval(recebendoMensagens, 3000);
+    recebendoMensagens();
 }
 
 function recebendoMensagens() {
@@ -40,8 +35,6 @@ function recebendoMensagens() {
 function errorEntrarSala(erro) {
     console.log("Deu error");
     alert("Usuario ja conectado, utilize outro nome")
-    statusCode = erro.response.status;
-    console.log(statusCode);
     conectar();
 }
 
@@ -51,15 +44,13 @@ function ManterConexao() {
 }
 
 function toOnline(response) {
-    console.log("Ainda to online!")
+    
 }
 
 
 function receberMensagens(resposta) {
     mensagem.innerHTML = "";
-    console.log(resposta);
     mensagens = resposta.data;
-    console.log(mensagens);
     for (let i = 0; i < mensagens.length; i++) {
         if (mensagens[i].type === "status") {
             mensagem.innerHTML += `<div class="mensagem mensagemStatus"><p><span>(${mensagens[i].time})</span>  <strong>${mensagens[i].from}</strong> ${mensagens[i].text}</p></div>`
@@ -67,7 +58,7 @@ function receberMensagens(resposta) {
         if (mensagens[i].type === "message") {
             mensagem.innerHTML += `<div class="mensagem mensagemNormal"><p><span>(${mensagens[i].time})</span>  <strong>${mensagens[i].from}</strong> para <strong>${mensagens[i].to}</strong>: ${mensagens[i].text}</p></div>`
         }
-        if (mensagens[i].type === "private_message") {
+        if (mensagens[i].type === "private_message" && (mensagens[i].to === usuario || mensagens[i].from === usuario)) {
             mensagem.innerHTML += `<div class="mensagem mensagemReservadas"><p><span>(${mensagens[i].time})</span>  <strong>${mensagens[i].from}</strong> reservadamente para <strong>${mensagens[i].to}</strong>: ${mensagens[i].text}</p></div>`
         }
     }
@@ -76,7 +67,6 @@ function receberMensagens(resposta) {
 
 
 function enviarMensagem() {
-    console.log("estou funcionando");
     texto = input.value;
     mensagemEnviar = {
         from: usuario,
@@ -85,12 +75,20 @@ function enviarMensagem() {
         type: "message" // ou "private_message" para o bônus
     }
     requisicaoEnviar = axios.post("https://mock-api.driven.com.br/api/v6/uol/messages", mensagemEnviar);
-    requisicaoEnviar.then(processarMensagem)
+    requisicaoEnviar.then(processarMensagem);
+    requisicaoEnviar.catch(erroEnvio);
+
 }
 
 function processarMensagem(resposta){
-    console.log("opa!");
+    recebendoMensagens();
+}
+
+function erroEnvio (error) {
+    // usuario não está mais na sala
+    window.location.reload();
 }
 
 conectar();
+
 

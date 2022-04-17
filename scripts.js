@@ -1,11 +1,11 @@
-let usuario
+let usuario;
 let requisicaoEntrar;
 let ficarOnline;
 let promise;
-let mensagem = document.querySelector(".container");
-let input = document.querySelector("input");
+const mensagem = document.querySelector(".container");
+const input = document.querySelector("input");
 let texto;
-let mensagemEnviar = {}
+let mensagemEnviar = {};
 let requisicaoEnviar;
 let mensagens = [];
 
@@ -17,19 +17,13 @@ function conectar() {
     requisicaoEntrar = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants', usuarioAtivo)
     requisicaoEntrar.then(ficarNaSala);
     requisicaoEntrar.catch(errorEntrarSala);
+    recebendoMensagens();
 }
 
 
 function ficarNaSala(response) {
     setInterval(ManterConexao, 5000);
-    // AQUI VAI GERAR AS MENSAGENS E OS ENVIOS
     setInterval(recebendoMensagens, 3000);
-    recebendoMensagens();
-}
-
-function recebendoMensagens() {
-    promise = axios.get("https://mock-api.driven.com.br/api/v6/uol/messages");
-    promise.then(receberMensagens);
 }
 
 function errorEntrarSala(erro) {
@@ -37,6 +31,12 @@ function errorEntrarSala(erro) {
     alert("Usuario ja conectado, utilize outro nome")
     conectar();
 }
+
+function recebendoMensagens() {
+    promise = axios.get("https://mock-api.driven.com.br/api/v6/uol/messages");
+    promise.then(mensagemRecebida);
+}
+
 
 function ManterConexao() {
     ficarOnline = axios.post('https://mock-api.driven.com.br/api/v6/uol/status', usuarioAtivo)
@@ -48,7 +48,7 @@ function toOnline(response) {
 }
 
 
-function receberMensagens(resposta) {
+function mensagemRecebida(resposta) {
     mensagem.innerHTML = "";
     mensagens = resposta.data;
     for (let i = 0; i < mensagens.length; i++) {
@@ -58,7 +58,7 @@ function receberMensagens(resposta) {
         if (mensagens[i].type === "message") {
             mensagem.innerHTML += `<div class="mensagem mensagemNormal"><p><span>(${mensagens[i].time})</span>  <strong>${mensagens[i].from}</strong> para <strong>${mensagens[i].to}</strong>: ${mensagens[i].text}</p></div>`
         }
-        if (mensagens[i].type === "private_message" && (mensagens[i].to === usuario || mensagens[i].from === usuario)) {
+        if (mensagens[i].type === "private_message" && (mensagens[i].to === usuario || mensagens[i].from === usuario || mensagens[i].to === "Todos")) {
             mensagem.innerHTML += `<div class="mensagem mensagemReservadas"><p><span>(${mensagens[i].time})</span>  <strong>${mensagens[i].from}</strong> reservadamente para <strong>${mensagens[i].to}</strong>: ${mensagens[i].text}</p></div>`
         }
     }
@@ -72,11 +72,13 @@ function enviarMensagem() {
         from: usuario,
         to: "Todos",
         text: texto,
-        type: "message" // ou "private_message" para o bônus
+        type: "message" 
     }
     requisicaoEnviar = axios.post("https://mock-api.driven.com.br/api/v6/uol/messages", mensagemEnviar);
     requisicaoEnviar.then(processarMensagem);
     requisicaoEnviar.catch(erroEnvio);
+    input.value = "";
+    recebendoMensagens();
 
 }
 
@@ -85,7 +87,7 @@ function processarMensagem(resposta){
 }
 
 function erroEnvio (error) {
-    // usuario não está mais na sala
+    alert("Você foi desconectado da Sala");
     window.location.reload();
 }
 
